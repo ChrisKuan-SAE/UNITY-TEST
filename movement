@@ -1,0 +1,58 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class playerController : MonoBehaviour
+{
+
+    CharacterController controller;
+    public float speed = 2.5f;
+    //public float rotateSpeed = 5.0f;
+    public float jumpHeight = 1.0f;
+    public float gravity = 9.81f;
+    public int noJumps = 2;
+    int tempJumps;
+    Vector3 movement;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        controller = GetComponent<CharacterController>();
+        tempJumps = noJumps;
+    }
+
+    // Update is called once per frame
+    void Update()
+    { 
+        Vector3 forward = transform.TransformDirection(Vector3.forward);
+        //float verticalInput = Input.GetAxis("Vertical") * speed;
+
+        movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * speed;
+
+        if (controller.isGrounded)
+        {
+            movement.y = 0f;
+            tempJumps = noJumps;
+        }
+
+        else
+        {
+            movement /= 5;
+        }
+
+        if (Input.GetButtonDown("Jump") && tempJumps > 0)
+        {
+            movement.y += jumpHeight;
+            tempJumps -= 1;
+        }
+
+        movement.y -= gravity * Time.deltaTime;
+
+        controller.Move(movement * speed * Time.deltaTime);
+
+        //transform.Rotate(0, Input.GetAxis("Horizontal") * rotateSpeed, 0);
+
+        //controller.SimpleMove(forward * verticalInput);
+
+    }
+}
